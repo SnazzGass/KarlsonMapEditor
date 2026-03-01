@@ -17,7 +17,7 @@ namespace KarlsonMapEditor
 {
     public class Main : Mod
     {
-        public const string Version = "4.2";
+        public const string Version = "5.1";
 
         public override void OnEnable()
         {
