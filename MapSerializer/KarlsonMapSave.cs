@@ -24,67 +24,72 @@ namespace KarlsonMapEditor {
     static KarlsonMapSaveReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChZrYXJsc29uX21hcF9zYXZlLnByb3RvEhBLYXJsc29uTWFwRWRpdG9yIssC",
+            "ChZrYXJsc29uX21hcF9zYXZlLnByb3RvEhBLYXJsc29uTWFwRWRpdG9yIoYE",
             "CgtNYXBHZW9tZXRyeRIyCgVzaGFwZRgBIAEoDjIjLkthcmxzb25NYXBFZGl0",
             "b3IuTWFwR2VvbWV0cnkuU2hhcGUSEwoLbWF0ZXJpYWxfaWQYAiABKAUSGwoT",
-            "dXZfbm9ybWFsaXplZF9zY2FsZRgDIAEoAhIOCgZib3VuY2UYCiABKAgSDQoF",
-            "Z2xhc3MYCyABKAgSDAoEbGF2YRgMIAEoCBIUCgxvYmplY3RfbGF5ZXIYDSAB",
-            "KAgikgEKBVNoYXBlEggKBGN1YmUQABIKCgZzcGhlcmUQARIMCghjeWxpbmRl",
-            "chACEgkKBXBsYW5lEAMSEgoOc3F1YXJlX3B5cmFtaWQQBBIYChRyaWdodF90",
-            "cmlhbmdsZV9wcmlzbRAFEhoKFnF1YXJ0ZXJfc3F1YXJlX3B5cmFtaWQQBhIQ",
-            "CgxxdWFydGVyX3BpcGUQByKCAgoJTWFwUHJlZmFiEjsKC3ByZWZhYl90eXBl",
-            "GAEgASgOMiYuS2FybHNvbk1hcEVkaXRvci5NYXBQcmVmYWIuUHJlZmFiVHlw",
-            "ZRITCgtwcmVmYWJfZGF0YRgCIAEoBSKiAQoKUHJlZmFiVHlwZRIKCgZwaXN0",
-            "b2wQABIICgRhazQ3EAESCwoHc2hvdGd1bhACEgoKBmJvb21lchADEgwKCGdy",
-            "YXBwbGVyEAQSEgoOZHVtbXlfZ3JhcHBsZXIQBRIJCgV0YWJsZRAGEgoKBmJh",
-            "cnJlbBAHEgoKBmxvY2tlchAIEgoKBnNjcmVlbhAJEggKBG1pbGsQChIKCgZl",
-            "bmVtZXkQCyI5CghNYXBHcm91cBItCghjaGlsZHJlbhgBIAMoCzIbLkthcmxz",
-            "b25NYXBFZGl0b3IuTWFwT2JqZWN0ImgKCE1hcExpZ2h0EhIKCnNwb3RfbGln",
-            "aHQYASABKAgSEgoKdGludF9jb2xvchgCIAMoAhIRCglpbnRlbnNpdHkYAyAB",
-            "KAISDQoFcmFuZ2UYBCABKAISEgoKc3BvdF9hbmdsZRgFIAEoAiIsCgdNYXBU",
-            "ZXh0EgwKBHRleHQYASABKAkSEwoLc2hhZGVfY29sb3IYAiADKAIi2AIKCU1h",
-            "cE9iamVjdBIMCgRuYW1lGAEgASgJEhcKD3Bvc2l0aW9uX3ZlY3RvchgCIAMo",
-            "AhIXCg9yb3RhdGlvbl92ZWN0b3IYAyADKAISFAoMc2NhbGVfdmVjdG9yGAQg",
-            "AygCEjEKCGdlb21ldHJ5GAUgASgLMh0uS2FybHNvbk1hcEVkaXRvci5NYXBH",
-            "ZW9tZXRyeUgAEi0KBnByZWZhYhgGIAEoCzIbLkthcmxzb25NYXBFZGl0b3Iu",
-            "TWFwUHJlZmFiSAASKwoFZ3JvdXAYByABKAsyGi5LYXJsc29uTWFwRWRpdG9y",
-            "Lk1hcEdyb3VwSAASKwoFbGlnaHQYCCABKAsyGi5LYXJsc29uTWFwRWRpdG9y",
-            "Lk1hcExpZ2h0SAASMQoMdGV4dF9kaXNwbGF5GAkgASgLMhkuS2FybHNvbk1h",
-            "cEVkaXRvci5NYXBUZXh0SABCBgoEdHlwZSJNCgpNYXBUZXh0dXJlEhcKDXRl",
-            "eHR1cmVfaW5kZXgYASABKAVIABIUCgppbWFnZV9kYXRhGAIgASgMSABCEAoO",
-            "dGV4dHVyZV9zb3VyY2UinwMKC01hcE1hdGVyaWFsEjkKBG1vZGUYASABKA4y",
-            "Ky5LYXJsc29uTWFwRWRpdG9yLk1hcE1hdGVyaWFsLlJlbmRlcmluZ01vZGUS",
-            "GQoRYWxiZWRvX3RleHR1cmVfaWQYAiABKAUSIQoZbWV0YWxsaWNfZ2xvc3Nf",
-            "dGV4dHVyZV9pZBgDIAEoBRIdChVub3JtYWxfbWFwX3RleHR1cmVfaWQYBCAB",
-            "KAUSFAoMc2NhbGVfdmVjdG9yGAUgAygCEhUKDW9mZnNldF92ZWN0b3IYBiAD",
-            "KAISFAoMYWxiZWRvX2NvbG9yGAcgAygCEhAKCG1ldGFsbGljGAggASgCEhIK",
-            "CnNtb290aG5lc3MYCSABKAISEgoKYnVtcF9zY2FsZRgMIAEoAhIaChJzcGVj",
-            "dWxhcl9oaWdobGlnaHQYCiABKAgSGwoTc3BlY3VsYXJfcmVmbGVjdGlvbhgL",
-            "IAEoCCJCCg1SZW5kZXJpbmdNb2RlEgoKBm9wYXF1ZRAAEgoKBmN1dG91dBAB",
-            "EggKBGZhZGUQAhIPCgt0cmFuc3BhcmVudBADIs0BChFNYXBTaXhTaWRlZFNr",
-            "eWJveBIYChBmcm9udF90ZXh0dXJlX2lkGAEgASgFEhcKD2JhY2tfdGV4dHVy",
-            "ZV9pZBgCIAEoBRIXCg9sZWZ0X3RleHR1cmVfaWQYAyABKAUSGAoQcmlnaHRf",
-            "dGV4dHVyZV9pZBgEIAEoBRIVCg11cF90ZXh0dXJlX2lkGAUgASgFEhcKD2Rv",
-            "d25fdGV4dHVyZV9pZBgGIAEoBRIQCghyb3RhdGlvbhgHIAEoAhIQCghleHBv",
-            "c3VyZRgIIAEoAiKjAQoTTWFwUHJvY2VkdXJhbFNreWJveBIQCghzdW5fc2l6",
-            "ZRgBIAEoAhIcChRzdW5fc2l6ZV9jb252ZXJnZW5jZRgCIAEoAhIcChRhdG1v",
-            "c3BoZXJlX3RoaWNrbmVzcxgDIAEoAhIWCg5za3lfdGludF9jb2xvchgEIAMo",
-            "AhIUCgxncm91bmRfY29sb3IYBSADKAISEAoIZXhwb3N1cmUYCCABKAIi5wMK",
-            "A01hcBIUCgxzdGFydGluZ19ndW4YASABKAUSHQoVc3RhcnRfcG9zaXRpb25f",
-            "dmVjdG9yGAIgAygCEhkKEXN0YXJ0X29yaWVudGF0aW9uGAMgASgCEikKBHJv",
-            "b3QYBCABKAsyGy5LYXJsc29uTWFwRWRpdG9yLk1hcE9iamVjdBIXCg9hdXRv",
-            "bWF0YV9zY3JpcHQYBSABKAkSEgoKbHVhX3NjcmlwdBgNIAEoCRIuCgh0ZXh0",
-            "dXJlcxgGIAMoCzIcLkthcmxzb25NYXBFZGl0b3IuTWFwVGV4dHVyZRIwCglt",
-            "YXRlcmlhbHMYByADKAsyHS5LYXJsc29uTWFwRWRpdG9yLk1hcE1hdGVyaWFs",
-            "EjgKCXNpeF9zaWRlZBgIIAEoCzIjLkthcmxzb25NYXBFZGl0b3IuTWFwU2l4",
-            "U2lkZWRTa3lib3hIABI7Cgpwcm9jZWR1cmFsGAkgASgLMiUuS2FybHNvbk1h",
-            "cEVkaXRvci5NYXBQcm9jZWR1cmFsU2t5Ym94SAASJQodZ2xvYmFsX2xpZ2h0",
-            "X2RpcmVjdGlvbl92ZWN0b3IYCiADKAISGgoSZ2xvYmFsX2xpZ2h0X2NvbG9y",
-            "GAsgAygCEhIKCmdyaWRfYWxpZ24YDCABKAJCCAoGc2t5Ym94YgZwcm90bzM="));
+            "dXZfbm9ybWFsaXplZF9zY2FsZRgDIAEoAhIZChFkZXByaWNhdGVkX2JvdW5j",
+            "ZRgKIAEoCBIYChBkZXByaWNhdGVkX2dsYXNzGAsgASgIEhcKD2RlcHJpY2F0",
+            "ZWRfbGF2YRgMIAEoCBIUCgxvYmplY3RfbGF5ZXIYDSABKAgSRwoLaW50ZXJh",
+            "Y3Rpb24YDiABKA4yMi5LYXJsc29uTWFwRWRpdG9yLk1hcEdlb21ldHJ5LkNv",
+            "bGxpc2lvbkludGVyYWN0aW9uIpIBCgVTaGFwZRIICgRjdWJlEAASCgoGc3Bo",
+            "ZXJlEAESDAoIY3lsaW5kZXIQAhIJCgVwbGFuZRADEhIKDnNxdWFyZV9weXJh",
+            "bWlkEAQSGAoUcmlnaHRfdHJpYW5nbGVfcHJpc20QBRIaChZxdWFydGVyX3Nx",
+            "dWFyZV9weXJhbWlkEAYSEAoMcXVhcnRlcl9waXBlEAciTwoUQ29sbGlzaW9u",
+            "SW50ZXJhY3Rpb24SCQoFc29saWQQABILCgd0cmlnZ2VyEAESCQoFZ2xhc3MQ",
+            "AhIICgRsYXZhEAMSCgoGYm91bmNlEAQiggIKCU1hcFByZWZhYhI7CgtwcmVm",
+            "YWJfdHlwZRgBIAEoDjImLkthcmxzb25NYXBFZGl0b3IuTWFwUHJlZmFiLlBy",
+            "ZWZhYlR5cGUSEwoLcHJlZmFiX2RhdGEYAiABKAUiogEKClByZWZhYlR5cGUS",
+            "CgoGcGlzdG9sEAASCAoEYWs0NxABEgsKB3Nob3RndW4QAhIKCgZib29tZXIQ",
+            "AxIMCghncmFwcGxlchAEEhIKDmR1bW15X2dyYXBwbGVyEAUSCQoFdGFibGUQ",
+            "BhIKCgZiYXJyZWwQBxIKCgZsb2NrZXIQCBIKCgZzY3JlZW4QCRIICgRtaWxr",
+            "EAoSCgoGZW5lbWV5EAsiOQoITWFwR3JvdXASLQoIY2hpbGRyZW4YASADKAsy",
+            "Gy5LYXJsc29uTWFwRWRpdG9yLk1hcE9iamVjdCJoCghNYXBMaWdodBISCgpz",
+            "cG90X2xpZ2h0GAEgASgIEhIKCnRpbnRfY29sb3IYAiADKAISEQoJaW50ZW5z",
+            "aXR5GAMgASgCEg0KBXJhbmdlGAQgASgCEhIKCnNwb3RfYW5nbGUYBSABKAIi",
+            "LAoHTWFwVGV4dBIMCgR0ZXh0GAEgASgJEhMKC3NoYWRlX2NvbG9yGAIgAygC",
+            "ItgCCglNYXBPYmplY3QSDAoEbmFtZRgBIAEoCRIXCg9wb3NpdGlvbl92ZWN0",
+            "b3IYAiADKAISFwoPcm90YXRpb25fdmVjdG9yGAMgAygCEhQKDHNjYWxlX3Zl",
+            "Y3RvchgEIAMoAhIxCghnZW9tZXRyeRgFIAEoCzIdLkthcmxzb25NYXBFZGl0",
+            "b3IuTWFwR2VvbWV0cnlIABItCgZwcmVmYWIYBiABKAsyGy5LYXJsc29uTWFw",
+            "RWRpdG9yLk1hcFByZWZhYkgAEisKBWdyb3VwGAcgASgLMhouS2FybHNvbk1h",
+            "cEVkaXRvci5NYXBHcm91cEgAEisKBWxpZ2h0GAggASgLMhouS2FybHNvbk1h",
+            "cEVkaXRvci5NYXBMaWdodEgAEjEKDHRleHRfZGlzcGxheRgJIAEoCzIZLkth",
+            "cmxzb25NYXBFZGl0b3IuTWFwVGV4dEgAQgYKBHR5cGUiTQoKTWFwVGV4dHVy",
+            "ZRIXCg10ZXh0dXJlX2luZGV4GAEgASgFSAASFAoKaW1hZ2VfZGF0YRgCIAEo",
+            "DEgAQhAKDnRleHR1cmVfc291cmNlIp8DCgtNYXBNYXRlcmlhbBI5CgRtb2Rl",
+            "GAEgASgOMisuS2FybHNvbk1hcEVkaXRvci5NYXBNYXRlcmlhbC5SZW5kZXJp",
+            "bmdNb2RlEhkKEWFsYmVkb190ZXh0dXJlX2lkGAIgASgFEiEKGW1ldGFsbGlj",
+            "X2dsb3NzX3RleHR1cmVfaWQYAyABKAUSHQoVbm9ybWFsX21hcF90ZXh0dXJl",
+            "X2lkGAQgASgFEhQKDHNjYWxlX3ZlY3RvchgFIAMoAhIVCg1vZmZzZXRfdmVj",
+            "dG9yGAYgAygCEhQKDGFsYmVkb19jb2xvchgHIAMoAhIQCghtZXRhbGxpYxgI",
+            "IAEoAhISCgpzbW9vdGhuZXNzGAkgASgCEhIKCmJ1bXBfc2NhbGUYDCABKAIS",
+            "GgoSc3BlY3VsYXJfaGlnaGxpZ2h0GAogASgIEhsKE3NwZWN1bGFyX3JlZmxl",
+            "Y3Rpb24YCyABKAgiQgoNUmVuZGVyaW5nTW9kZRIKCgZvcGFxdWUQABIKCgZj",
+            "dXRvdXQQARIICgRmYWRlEAISDwoLdHJhbnNwYXJlbnQQAyLNAQoRTWFwU2l4",
+            "U2lkZWRTa3lib3gSGAoQZnJvbnRfdGV4dHVyZV9pZBgBIAEoBRIXCg9iYWNr",
+            "X3RleHR1cmVfaWQYAiABKAUSFwoPbGVmdF90ZXh0dXJlX2lkGAMgASgFEhgK",
+            "EHJpZ2h0X3RleHR1cmVfaWQYBCABKAUSFQoNdXBfdGV4dHVyZV9pZBgFIAEo",
+            "BRIXCg9kb3duX3RleHR1cmVfaWQYBiABKAUSEAoIcm90YXRpb24YByABKAIS",
+            "EAoIZXhwb3N1cmUYCCABKAIiowEKE01hcFByb2NlZHVyYWxTa3lib3gSEAoI",
+            "c3VuX3NpemUYASABKAISHAoUc3VuX3NpemVfY29udmVyZ2VuY2UYAiABKAIS",
+            "HAoUYXRtb3NwaGVyZV90aGlja25lc3MYAyABKAISFgoOc2t5X3RpbnRfY29s",
+            "b3IYBCADKAISFAoMZ3JvdW5kX2NvbG9yGAUgAygCEhAKCGV4cG9zdXJlGAgg",
+            "ASgCIucDCgNNYXASFAoMc3RhcnRpbmdfZ3VuGAEgASgFEh0KFXN0YXJ0X3Bv",
+            "c2l0aW9uX3ZlY3RvchgCIAMoAhIZChFzdGFydF9vcmllbnRhdGlvbhgDIAEo",
+            "AhIpCgRyb290GAQgASgLMhsuS2FybHNvbk1hcEVkaXRvci5NYXBPYmplY3QS",
+            "FwoPYXV0b21hdGFfc2NyaXB0GAUgASgJEhIKCmx1YV9zY3JpcHQYDSABKAkS",
+            "LgoIdGV4dHVyZXMYBiADKAsyHC5LYXJsc29uTWFwRWRpdG9yLk1hcFRleHR1",
+            "cmUSMAoJbWF0ZXJpYWxzGAcgAygLMh0uS2FybHNvbk1hcEVkaXRvci5NYXBN",
+            "YXRlcmlhbBI4CglzaXhfc2lkZWQYCCABKAsyIy5LYXJsc29uTWFwRWRpdG9y",
+            "Lk1hcFNpeFNpZGVkU2t5Ym94SAASOwoKcHJvY2VkdXJhbBgJIAEoCzIlLkth",
+            "cmxzb25NYXBFZGl0b3IuTWFwUHJvY2VkdXJhbFNreWJveEgAEiUKHWdsb2Jh",
+            "bF9saWdodF9kaXJlY3Rpb25fdmVjdG9yGAogAygCEhoKEmdsb2JhbF9saWdo",
+            "dF9jb2xvchgLIAMoAhISCgpncmlkX2FsaWduGAwgASgCQggKBnNreWJveGIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::KarlsonMapEditor.MapGeometry), global::KarlsonMapEditor.MapGeometry.Parser, new[]{ "Shape", "MaterialId", "UvNormalizedScale", "Bounce", "Glass", "Lava", "ObjectLayer" }, null, new[]{ typeof(global::KarlsonMapEditor.MapGeometry.Types.Shape) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::KarlsonMapEditor.MapGeometry), global::KarlsonMapEditor.MapGeometry.Parser, new[]{ "Shape", "MaterialId", "UvNormalizedScale", "DepricatedBounce", "DepricatedGlass", "DepricatedLava", "ObjectLayer", "Interaction" }, null, new[]{ typeof(global::KarlsonMapEditor.MapGeometry.Types.Shape), typeof(global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::KarlsonMapEditor.MapPrefab), global::KarlsonMapEditor.MapPrefab.Parser, new[]{ "PrefabType", "PrefabData" }, null, new[]{ typeof(global::KarlsonMapEditor.MapPrefab.Types.PrefabType) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::KarlsonMapEditor.MapGroup), global::KarlsonMapEditor.MapGroup.Parser, new[]{ "Children" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::KarlsonMapEditor.MapLight), global::KarlsonMapEditor.MapLight.Parser, new[]{ "SpotLight", "TintColor", "Intensity", "Range", "SpotAngle" }, null, null, null, null),
@@ -139,10 +144,11 @@ namespace KarlsonMapEditor {
       shape_ = other.shape_;
       materialId_ = other.materialId_;
       uvNormalizedScale_ = other.uvNormalizedScale_;
-      bounce_ = other.bounce_;
-      glass_ = other.glass_;
-      lava_ = other.lava_;
+      depricatedBounce_ = other.depricatedBounce_;
+      depricatedGlass_ = other.depricatedGlass_;
+      depricatedLava_ = other.depricatedLava_;
       objectLayer_ = other.objectLayer_;
+      interaction_ = other.interaction_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -188,42 +194,48 @@ namespace KarlsonMapEditor {
       }
     }
 
-    /// <summary>Field number for the "bounce" field.</summary>
-    public const int BounceFieldNumber = 10;
-    private bool bounce_;
+    /// <summary>Field number for the "depricated_bounce" field.</summary>
+    public const int DepricatedBounceFieldNumber = 10;
+    private bool depricatedBounce_;
     /// <summary>
     /// flags
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Bounce {
-      get { return bounce_; }
+    public bool DepricatedBounce {
+      get { return depricatedBounce_; }
       set {
-        bounce_ = value;
+        depricatedBounce_ = value;
       }
     }
 
-    /// <summary>Field number for the "glass" field.</summary>
-    public const int GlassFieldNumber = 11;
-    private bool glass_;
+    /// <summary>Field number for the "depricated_glass" field.</summary>
+    public const int DepricatedGlassFieldNumber = 11;
+    private bool depricatedGlass_;
+    /// <summary>
+    /// depricated
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Glass {
-      get { return glass_; }
+    public bool DepricatedGlass {
+      get { return depricatedGlass_; }
       set {
-        glass_ = value;
+        depricatedGlass_ = value;
       }
     }
 
-    /// <summary>Field number for the "lava" field.</summary>
-    public const int LavaFieldNumber = 12;
-    private bool lava_;
+    /// <summary>Field number for the "depricated_lava" field.</summary>
+    public const int DepricatedLavaFieldNumber = 12;
+    private bool depricatedLava_;
+    /// <summary>
+    /// depricated
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Lava {
-      get { return lava_; }
+    public bool DepricatedLava {
+      get { return depricatedLava_; }
       set {
-        lava_ = value;
+        depricatedLava_ = value;
       }
     }
 
@@ -236,6 +248,18 @@ namespace KarlsonMapEditor {
       get { return objectLayer_; }
       set {
         objectLayer_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "interaction" field.</summary>
+    public const int InteractionFieldNumber = 14;
+    private global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction interaction_ = global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction.Solid;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction Interaction {
+      get { return interaction_; }
+      set {
+        interaction_ = value;
       }
     }
 
@@ -257,10 +281,11 @@ namespace KarlsonMapEditor {
       if (Shape != other.Shape) return false;
       if (MaterialId != other.MaterialId) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(UvNormalizedScale, other.UvNormalizedScale)) return false;
-      if (Bounce != other.Bounce) return false;
-      if (Glass != other.Glass) return false;
-      if (Lava != other.Lava) return false;
+      if (DepricatedBounce != other.DepricatedBounce) return false;
+      if (DepricatedGlass != other.DepricatedGlass) return false;
+      if (DepricatedLava != other.DepricatedLava) return false;
       if (ObjectLayer != other.ObjectLayer) return false;
+      if (Interaction != other.Interaction) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -271,10 +296,11 @@ namespace KarlsonMapEditor {
       if (Shape != global::KarlsonMapEditor.MapGeometry.Types.Shape.Cube) hash ^= Shape.GetHashCode();
       if (MaterialId != 0) hash ^= MaterialId.GetHashCode();
       if (UvNormalizedScale != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(UvNormalizedScale);
-      if (Bounce != false) hash ^= Bounce.GetHashCode();
-      if (Glass != false) hash ^= Glass.GetHashCode();
-      if (Lava != false) hash ^= Lava.GetHashCode();
+      if (DepricatedBounce != false) hash ^= DepricatedBounce.GetHashCode();
+      if (DepricatedGlass != false) hash ^= DepricatedGlass.GetHashCode();
+      if (DepricatedLava != false) hash ^= DepricatedLava.GetHashCode();
       if (ObjectLayer != false) hash ^= ObjectLayer.GetHashCode();
+      if (Interaction != global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction.Solid) hash ^= Interaction.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -305,21 +331,25 @@ namespace KarlsonMapEditor {
         output.WriteRawTag(29);
         output.WriteFloat(UvNormalizedScale);
       }
-      if (Bounce != false) {
+      if (DepricatedBounce != false) {
         output.WriteRawTag(80);
-        output.WriteBool(Bounce);
+        output.WriteBool(DepricatedBounce);
       }
-      if (Glass != false) {
+      if (DepricatedGlass != false) {
         output.WriteRawTag(88);
-        output.WriteBool(Glass);
+        output.WriteBool(DepricatedGlass);
       }
-      if (Lava != false) {
+      if (DepricatedLava != false) {
         output.WriteRawTag(96);
-        output.WriteBool(Lava);
+        output.WriteBool(DepricatedLava);
       }
       if (ObjectLayer != false) {
         output.WriteRawTag(104);
         output.WriteBool(ObjectLayer);
+      }
+      if (Interaction != global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction.Solid) {
+        output.WriteRawTag(112);
+        output.WriteEnum((int) Interaction);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -343,21 +373,25 @@ namespace KarlsonMapEditor {
         output.WriteRawTag(29);
         output.WriteFloat(UvNormalizedScale);
       }
-      if (Bounce != false) {
+      if (DepricatedBounce != false) {
         output.WriteRawTag(80);
-        output.WriteBool(Bounce);
+        output.WriteBool(DepricatedBounce);
       }
-      if (Glass != false) {
+      if (DepricatedGlass != false) {
         output.WriteRawTag(88);
-        output.WriteBool(Glass);
+        output.WriteBool(DepricatedGlass);
       }
-      if (Lava != false) {
+      if (DepricatedLava != false) {
         output.WriteRawTag(96);
-        output.WriteBool(Lava);
+        output.WriteBool(DepricatedLava);
       }
       if (ObjectLayer != false) {
         output.WriteRawTag(104);
         output.WriteBool(ObjectLayer);
+      }
+      if (Interaction != global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction.Solid) {
+        output.WriteRawTag(112);
+        output.WriteEnum((int) Interaction);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -378,17 +412,20 @@ namespace KarlsonMapEditor {
       if (UvNormalizedScale != 0F) {
         size += 1 + 4;
       }
-      if (Bounce != false) {
+      if (DepricatedBounce != false) {
         size += 1 + 1;
       }
-      if (Glass != false) {
+      if (DepricatedGlass != false) {
         size += 1 + 1;
       }
-      if (Lava != false) {
+      if (DepricatedLava != false) {
         size += 1 + 1;
       }
       if (ObjectLayer != false) {
         size += 1 + 1;
+      }
+      if (Interaction != global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction.Solid) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Interaction);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -411,17 +448,20 @@ namespace KarlsonMapEditor {
       if (other.UvNormalizedScale != 0F) {
         UvNormalizedScale = other.UvNormalizedScale;
       }
-      if (other.Bounce != false) {
-        Bounce = other.Bounce;
+      if (other.DepricatedBounce != false) {
+        DepricatedBounce = other.DepricatedBounce;
       }
-      if (other.Glass != false) {
-        Glass = other.Glass;
+      if (other.DepricatedGlass != false) {
+        DepricatedGlass = other.DepricatedGlass;
       }
-      if (other.Lava != false) {
-        Lava = other.Lava;
+      if (other.DepricatedLava != false) {
+        DepricatedLava = other.DepricatedLava;
       }
       if (other.ObjectLayer != false) {
         ObjectLayer = other.ObjectLayer;
+      }
+      if (other.Interaction != global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction.Solid) {
+        Interaction = other.Interaction;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -455,19 +495,23 @@ namespace KarlsonMapEditor {
             break;
           }
           case 80: {
-            Bounce = input.ReadBool();
+            DepricatedBounce = input.ReadBool();
             break;
           }
           case 88: {
-            Glass = input.ReadBool();
+            DepricatedGlass = input.ReadBool();
             break;
           }
           case 96: {
-            Lava = input.ReadBool();
+            DepricatedLava = input.ReadBool();
             break;
           }
           case 104: {
             ObjectLayer = input.ReadBool();
+            break;
+          }
+          case 112: {
+            Interaction = (global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction) input.ReadEnum();
             break;
           }
         }
@@ -502,19 +546,23 @@ namespace KarlsonMapEditor {
             break;
           }
           case 80: {
-            Bounce = input.ReadBool();
+            DepricatedBounce = input.ReadBool();
             break;
           }
           case 88: {
-            Glass = input.ReadBool();
+            DepricatedGlass = input.ReadBool();
             break;
           }
           case 96: {
-            Lava = input.ReadBool();
+            DepricatedLava = input.ReadBool();
             break;
           }
           case 104: {
             ObjectLayer = input.ReadBool();
+            break;
+          }
+          case 112: {
+            Interaction = (global::KarlsonMapEditor.MapGeometry.Types.CollisionInteraction) input.ReadEnum();
             break;
           }
         }
@@ -536,6 +584,14 @@ namespace KarlsonMapEditor {
         [pbr::OriginalName("right_triangle_prism")] RightTrianglePrism = 5,
         [pbr::OriginalName("quarter_square_pyramid")] QuarterSquarePyramid = 6,
         [pbr::OriginalName("quarter_pipe")] QuarterPipe = 7,
+      }
+
+      public enum CollisionInteraction {
+        [pbr::OriginalName("solid")] Solid = 0,
+        [pbr::OriginalName("trigger")] Trigger = 1,
+        [pbr::OriginalName("glass")] Glass = 2,
+        [pbr::OriginalName("lava")] Lava = 3,
+        [pbr::OriginalName("bounce")] Bounce = 4,
       }
 
     }

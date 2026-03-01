@@ -303,9 +303,7 @@ namespace KarlsonMapEditor
                     MaterialId = obj.data.MaterialId,
                     UvNormalizedScale = obj.data.UVNormalizedScale,
                     // flags
-                    Bounce = obj.data.Bounce,
-                    Glass = obj.data.Glass,
-                    Lava = obj.data.Lava,
+                    Interaction = (MapGeometry.Types.CollisionInteraction)obj.data.interaction,
                     ObjectLayer = obj.data.MarkAsObject
                 };
             }
@@ -384,9 +382,11 @@ namespace KarlsonMapEditor
                 levelObject.ShapeId = (GeometryShape)Geometry.Shape;
                 levelObject.MaterialId = Geometry.MaterialId;
                 levelObject.UVNormalizedScale = Geometry.UvNormalizedScale;
-                levelObject.Bounce = Geometry.Bounce;
-                levelObject.Glass = Geometry.Glass;
-                levelObject.Lava = Geometry.Lava;
+                levelObject.interaction = (CollisionInteraction)Geometry.Interaction;
+                // convert depricated fields
+                if (Geometry.DepricatedBounce) { levelObject.interaction = CollisionInteraction.Bounce; }
+                else if (Geometry.DepricatedGlass) { levelObject.interaction = CollisionInteraction.Glass; }
+                else if (Geometry.DepricatedLava) { levelObject.interaction = CollisionInteraction.Lava; }
                 levelObject.MarkAsObject = Geometry.ObjectLayer;
             }
             else if (TypeCase == TypeOneofCase.Light)

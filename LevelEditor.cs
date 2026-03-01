@@ -61,6 +61,7 @@ namespace KarlsonMapEditor
             materialMode = new GUIex.Dropdown(Enum.GetNames(typeof(MaterialManager.ShaderBlendMode)), 0);
             skyboxMode = new GUIex.Dropdown(Enum.GetNames(typeof(SkyboxMode)), 0);
             spawnGeometry = new GUIex.Dropdown(Enum.GetNames(typeof(GeometryShape)).Prepend("Spawn Geometry").ToArray(), 0);
+            collisionInteraction = new GUIex.Dropdown(Enum.GetNames(typeof(CollisionInteraction)).ToArray(), 0);
         }
         private enum WindowId
         {
@@ -167,6 +168,7 @@ namespace KarlsonMapEditor
         static GUIex.Dropdown materialMode;
         static GUIex.Dropdown skyboxMode;
         static GUIex.Dropdown spawnGeometry;
+        static GUIex.Dropdown collisionInteraction;
         private static void InitEditor(Scene arg0, LoadSceneMode arg1)
         {
             AudioListener.volume = 0;
@@ -487,8 +489,8 @@ namespace KarlsonMapEditor
                                 SelectedObject.Deselect();
 
                                 File.WriteAllText(Path.Combine(Main.directory, "_temp.amta"), "# Any code written below will be executed every time the level is (re)started.\n# Be sure to use LF instead of CRLF line endings.\n# Any modifications to this file will be reflected by marking the level as modified (unsaved).\n# Saving the level will also save this script.\n# Automata documentation: https://github.com/devilExE3/automataV2/blob/master/automata.md\n# KME API: https://github.com/karlsonmodding/KarlsonMapEditor/wiki/Scripting-API\n$:print(\"Hello, world!\")");
+                                File.WriteAllText(LuaScriptRunner.ScriptPath, LuaScriptRunner.DefaultCode);
                                 fileWatcher = Coroutines.StartCoroutine(FileWatcher());
-                                //Process.Start(Path.Combine(Main.directory, "_temp.amta"));
                             }
                         }
 
@@ -825,20 +827,7 @@ namespace KarlsonMapEditor
                     SelectedObject.Identify();
                 if (GUI.Button(new Rect(245, 40, 50, 20), "Find")) { PlayerMovement.Instance.gameObject.transform.position = SelectedObject.Basic.worldPos + Camera.main.transform.forward * -5f; SelectedObject.Identify(); }
 
-                if (SelectedObject.Type == SelectedObject.SelectedType.EditorObject && SelectedObject.Object.data.PrefabId == PrefabType.Enemy)
-                {
-                    GUI.Label(new Rect(5, 60, 40, 20), "Gun");
-                    enemyGun.Index = SelectedObject.Object.data.PrefabData;
-                    enemyGun.Draw(new Rect(35, 60, 100, 20));
-                    if (SelectedObject.Object.data.PrefabData != enemyGun.Index)
-                    {
-                        MarkAsModified();
-                        SelectedObject.Object.data.PrefabData = enemyGun.Index;
-                        SelectedObject.Object.data.setGun(SelectedObject.Object.go);
-                    }
-                }
-                
-                GUILayout.BeginArea(new Rect(5, 100, 300, 80));
+                GUILayout.BeginArea(new Rect(5, 65, 300, 80));
                 GUILayout.BeginVertical(noSpace);
 
                 float x, y, z;
@@ -887,10 +876,46 @@ namespace KarlsonMapEditor
                 
                 if (SelectedObject.Type == SelectedObject.SelectedType.EditorObject)
                 {
+                    GUILayout.BeginArea(new Rect(5, 135, 300, 400));
                     EditorObject selected = SelectedObject.Object;
                     if (selected.data.Type == ObjectType.Geometry)
                     {
-                        GUILayout.BeginArea(new Rect(5, 165, 300, 400));
+
+                        GUILayout.BeginHorizontal();
+
+                        Rect collisionInteractionRect = GUILayoutUtility.GetRect(100, 20, noSpace);
+
+                        collisionInteraction.Index = (int)selected.data.interaction;
+                        int lastIndex = collisionInteraction.Index;
+                        collisionInteraction.Draw(collisionInteractionRect);
+                        if (collisionInteraction.Index != lastIndex)
+                        {
+                            CollisionInteraction interact = (CollisionInteraction)collisionInteraction.Index;
+
+                            // only convex objects can be used as triggers (whyyyy???)
+                            MeshCollider mColl = selected.go.GetComponent<MeshCollider>();
+                            if ( mColl == null || mColl.convex || // if the object's mesh is convex
+                            !( // or if the interaction doesn't use a trigger
+                            interact == CollisionInteraction.Glass ||
+                            interact == CollisionInteraction.Lava ||
+                            interact == CollisionInteraction.Trigger
+                            ))
+                            {
+                                selected.data.interaction = interact;
+                                MarkAsModified();
+                            }
+                            else
+                            {
+                                // revert back, that interaction behavior is incompatable with this collider
+                                collisionInteraction.Index = lastIndex;
+                                Loadson.Console.Log("Cannot use [" + interact.ToString() + "] interaction type with concave mesh");
+                            }
+                        }
+                        GUILayout.Space(30);
+                        bool bRes = GUILayout.Toggle(selected.data.MarkAsObject, "Mark as Object");
+                        if (selected.data.MarkAsObject != bRes) { MarkAsModified(); selected.data.MarkAsObject = bRes; }
+
+                        GUILayout.EndHorizontal();
 
                         GUILayout.BeginHorizontal();
 
@@ -1092,32 +1117,11 @@ namespace KarlsonMapEditor
 
                         // draw over
                         materialMode.Draw(matModeRect);
-                        GUILayout.EndArea();
-
-                        bool bRes;
-                        bRes = GUI.Toggle(new Rect(5, 60, 75, 20), selected.data.Bounce, "Bounce");
-                        if (selected.data.Bounce != bRes) { MarkAsModified(); selected.data.Bounce = bRes; }
-
-                        // only convex objects can be used as triggers (whyyyy???)
-                        MeshCollider mColl = selected.go.GetComponent<MeshCollider>();
-                        if (mColl == null || mColl.convex)
-                        {
-                            bRes = GUI.Toggle(new Rect(85, 60, 75, 20), selected.data.Glass, "Glass");
-                            if (selected.data.Glass != bRes) { MarkAsModified(); selected.data.Glass = bRes; }
-
-                            if (!selected.data.Glass)
-                            {
-                                bRes = GUI.Toggle(new Rect(165, 60, 75, 20), selected.data.Lava, "Lava");
-                                if (selected.data.Lava != bRes) { MarkAsModified(); selected.data.Lava = bRes; }
-                            }
-                        }
-                        bRes = GUI.Toggle(new Rect(5, 80, 120, 20), selected.data.MarkAsObject, "Mark as Object");
-                        if (selected.data.MarkAsObject != bRes) { MarkAsModified(); selected.data.MarkAsObject = bRes; }
+                        collisionInteraction.Draw(collisionInteractionRect);
                     }
 
                     if (selected.data.Type == ObjectType.Light)
                     {
-                        GUILayout.BeginArea(new Rect(5, 165, 300, 400));
                         GUILayout.BeginVertical();
 
                         Light light = selected.go.GetComponent<Light>();
@@ -1140,12 +1144,10 @@ namespace KarlsonMapEditor
                         }
 
                         GUILayout.EndVertical();
-                        GUILayout.EndArea();
                     }
 
                     if (selected.data.Type == ObjectType.Text)
                     {
-                        GUILayout.BeginArea(new Rect(5, 165, 300, 400));
                         GUILayout.BeginVertical();
                         GUILayout.Space(5);
 
@@ -1157,23 +1159,28 @@ namespace KarlsonMapEditor
                         selected.data.Text = tmp.text;
 
                         GUILayout.EndVertical();
-                        GUILayout.EndArea();
                     }
 
-                }
-                
+                    if (selected.data.Type == ObjectType.Prefab && SelectedObject.Object.data.PrefabId == PrefabType.Enemy)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("Gun", noSpace);
+                        enemyGun.Index = SelectedObject.Object.data.PrefabData;
 
-                if (SelectedObject.Type == SelectedObject.SelectedType.EditorObject && (SelectedObject.Object.data.Type == ObjectType.Geometry))
-                {
-                    
+                        Rect gunRect = GUILayoutUtility.GetRect(100, 20, noSpace);
+
+                        enemyGun.Draw(gunRect);
+                        if (SelectedObject.Object.data.PrefabData != enemyGun.Index)
+                        {
+                            MarkAsModified();
+                            SelectedObject.Object.data.PrefabData = enemyGun.Index;
+                            SelectedObject.Object.data.setGun(SelectedObject.Object.go);
+                        }
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.EndArea();
                 }
-                else
-                {
-                    if (SelectedObject.Type == SelectedObject.SelectedType.EditorObject && (SelectedObject.Object.data.Type == ObjectType.Prefab) && SelectedObject.Object.data.PrefabId == PrefabType.Enemy) // only draw, so it appears on top
-                        enemyGun.Draw(new Rect(35, 60, 100, 20));
-                    // for some reason, the first button rendered takes priority over the mouse click
-                    // even if it is below .. idk
-                }
+
                 GUI.DragWindow(new Rect(0, 0, 300, 20));
             }, "Object Properties");
 

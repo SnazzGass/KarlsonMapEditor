@@ -50,8 +50,6 @@ namespace KarlsonMapEditor
             //     If set to true, it's indexed with a name, if false it's indexed through brackets.
             public DynValue Index(Script script, object obj, DynValue index, bool isDirectIndexing)
             {
-                bool destroyed = obj != null && (UnityEngine.Object)obj == null;
-                if (destroyed) { return DynValue.Nil; }
                 return m_ProxyDescriptor.Index(script, Proxy(obj), index, isDirectIndexing);
             }
 

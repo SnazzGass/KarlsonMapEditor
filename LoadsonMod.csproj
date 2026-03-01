@@ -295,6 +295,7 @@
     <Compile Include="Scripting API\MoonSharp\CustomDescriptors.cs" />
     <Compile Include="Scripting API\MoonSharp\LuaScriptRunner.cs" />
     <Compile Include="Scripting API\MoonSharp\Proxies.cs" />
+    <Compile Include="Scripting API\Trigger.cs" />
     <Compile Include="Workshop API\Core.cs" />
     <Compile Include="Workshop API\KWM_Convert.cs" />
     <Compile Include="Workshop API\WorkshopCache.cs" />

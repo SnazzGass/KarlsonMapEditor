@@ -31,6 +31,16 @@ namespace KarlsonMapEditor
         QuarterPyramid,
         QuarterPipe,
     }
+
+    public enum CollisionInteraction
+    {
+        Solid,
+        Trigger,
+        Glass,
+        Lava,
+        Bounce
+    }
+
     public enum PrefabType
     {
         Pistol,
@@ -46,10 +56,8 @@ namespace KarlsonMapEditor
         Milk,
         Enemy
     }
-
     public class LevelData
     {
-
         public LevelData(byte[] _data)
         {
             // decompress
@@ -248,7 +256,7 @@ namespace KarlsonMapEditor
         }
         #endregion
 
-        
+        public const int NavAreaVoid = 11;
         public bool isKMEv2;
         public float gridAlign;
         public int startingGun;
@@ -298,9 +306,7 @@ namespace KarlsonMapEditor
                 ShapeId = model.ShapeId;
                 MaterialId = model.MaterialId;
                 UVNormalizedScale = model.UVNormalizedScale;
-                Bounce = model.Bounce;
-                Glass = model.Glass;
-                Lava = model.Lava;
+                interaction = model.interaction;
                 MarkAsObject = model.MarkAsObject;
                 Color = model.Color;
                 LightType = model.LightType;
@@ -346,9 +352,10 @@ namespace KarlsonMapEditor
                 Scale = scale;
 
                 Name = name;
-                Bounce = bounce;
-                Glass = glass && !disableTrigger;
-                Lava = lava;
+                if (bounce) { interaction = CollisionInteraction.Bounce; }
+                else if (glass && !disableTrigger) { interaction = CollisionInteraction.Glass; }
+                else if (lava) { interaction = CollisionInteraction.Lava; }
+
                 MarkAsObject = markAsObject;
             }
 
@@ -367,16 +374,20 @@ namespace KarlsonMapEditor
             public GeometryShape ShapeId;
             public int MaterialId;
             public float UVNormalizedScale = 10;
-            public bool Bounce;
-            public bool Glass;
-            public bool Lava;
+            public CollisionInteraction interaction;
             public bool MarkAsObject;
 
             // light and text
             public Color Color;
 
             // light specific
+            [MoonSharpHidden]
             public LightType LightType;
+            public bool SpotLight
+            {
+                get { return this.LightType == LightType.Spot; }
+                set { this.LightType = value ? LightType.Spot : LightType.Point; }
+            }
             public float Intensity;
             public float Range;
             public float SpotAngle;
@@ -448,52 +459,57 @@ namespace KarlsonMapEditor
                         go.GetComponent<MeshRenderer>().sharedMaterial = MaterialManager.Materials[MaterialId];
                         if (playMode)
                         {
-                            // set up breakable glass
-                            if (Glass)
+                            switch (interaction)
                             {
-                                go.GetComponent<Collider>().isTrigger = true;
-                                Glass newGlass = go.AddComponent<Glass>();
+                                case CollisionInteraction.Glass:
+                                    // set up breakable glass
+                                    go.GetComponent<Collider>().isTrigger = true;
+                                    Glass newGlass = go.AddComponent<Glass>();
 
-                                // copy in the required GOs
-                                GameObject prefabGlassCube = LoadsonAPI.PrefabManager.NewGlass();
-                                Glass prefabGlass = prefabGlassCube.GetComponent<Glass>();
-                                newGlass.glass = prefabGlass.glass;
-                                newGlass.glassSfx = prefabGlass.glassSfx;
-                                Object.Destroy(prefabGlass);
-                                Object.Destroy(prefabGlassCube);
+                                    // copy in the required GOs
+                                    GameObject prefabGlassCube = LoadsonAPI.PrefabManager.NewGlass();
+                                    Glass prefabGlass = prefabGlassCube.GetComponent<Glass>();
+                                    newGlass.glass = prefabGlass.glass;
+                                    newGlass.glassSfx = prefabGlass.glassSfx;
+                                    Object.Destroy(prefabGlass);
+                                    Object.Destroy(prefabGlassCube);
 
-                                // reset the transform
-                                newGlass.glass.transform.SetParent(go.transform);
-                                newGlass.glass.transform.localPosition = Vector3.zero;
-                                newGlass.glass.transform.localScale = Vector3.one;
-                                newGlass.glass.transform.localRotation = Quaternion.identity;
+                                    // reset the transform
+                                    newGlass.glass.transform.SetParent(go.transform);
+                                    newGlass.glass.transform.localPosition = Vector3.zero;
+                                    newGlass.glass.transform.localScale = Vector3.one;
+                                    newGlass.glass.transform.localRotation = Quaternion.identity;
 
-                                // fix particle system
-                                ParticleSystem ps = newGlass.glass.GetComponent<ParticleSystem>();
-                                ParticleSystem.ShapeModule shape = ps.shape;
-                                shape.scale = Scale;
-                                shape.rotation = Rotation;
-                                float volume = shape.scale.x * shape.scale.y * shape.scale.z;
-                                ParticleSystem.MainModule main = ps.main;
-                                main.maxParticles = Math.Max((int)(1000f * volume / 160f), 1);
+                                    // fix particle system
+                                    ParticleSystem ps = newGlass.glass.GetComponent<ParticleSystem>();
+                                    ParticleSystem.ShapeModule shape = ps.shape;
+                                    shape.scale = Scale;
+                                    shape.rotation = Rotation;
+                                    float volume = shape.scale.x * shape.scale.y * shape.scale.z;
+                                    ParticleSystem.MainModule main = ps.main;
+                                    main.maxParticles = Math.Max((int)(1000f * volume / 160f), 1);
+                                    break;
+                                case CollisionInteraction.Lava:
+                                    go.GetComponent<Collider>().isTrigger = true;
+                                    go.AddComponent<Lava>();
+                                    break;
+                                case CollisionInteraction.Trigger:
+                                    go.GetComponent<Collider>().isTrigger = true;
+                                    go.AddComponent<Scripting_API.Trigger>();
+                                    break;
+                                case CollisionInteraction.Bounce:
+                                    go.GetComponent<Collider>().material = LoadsonAPI.PrefabManager.BounceMaterial();
+                                    break;
                             }
-                            // set up deadly lava
-                            else if (Lava)
-                            {
-                                go.GetComponent<Collider>().isTrigger = true;
-                                go.AddComponent<Lava>();
-                            }
-                            // disable wallrun and grappling on objects
+                            // put in object layer to disable wallrun and grappling and enable holding if it has a Rigidbody
                             if (MarkAsObject)
                                 go.layer = LayerMask.NameToLayer("Object");
-                            // set up bounce
-                            if (Bounce)
-                                go.GetComponent<Collider>().material = LoadsonAPI.PrefabManager.BounceMaterial();
                             // prevent enemies from walking on objects they shouldn't be on
-                            if (Glass || Lava || Bounce)
+                            if (interaction != CollisionInteraction.Solid)
                             {
                                 NavMeshModifier modifier = go.AddComponent<NavMeshModifier>();
-                                modifier.area = NavMesh.GetAreaFromName("Not Walkable");
+                                if (interaction == CollisionInteraction.Trigger) { modifier.area = NavAreaVoid; }
+                                else { modifier.area = NavMesh.GetAreaFromName("Not Walkable"); }
                                 modifier.overrideArea = true;
                             }
                         }

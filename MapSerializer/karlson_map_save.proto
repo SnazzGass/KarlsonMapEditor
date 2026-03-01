@@ -14,15 +14,24 @@ message MapGeometry {
     quarter_pipe = 7;
   }
 
+  enum CollisionInteraction {
+    solid = 0;
+    trigger = 1;
+    glass = 2;
+    lava = 3;
+    bounce = 4;
+  }
+
   Shape shape = 1;
   int32 material_id = 2;
   float uv_normalized_scale = 3;
 
   // flags
-  bool bounce = 10;
-  bool glass = 11;
-  bool lava = 12;
+  bool depricated_bounce = 10; // depricated
+  bool depricated_glass = 11;  // depricated
+  bool depricated_lava = 12;   // depricated
   bool object_layer = 13;
+  CollisionInteraction interaction = 14;
 }
 
 message MapPrefab {

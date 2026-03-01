@@ -2,6 +2,7 @@
 using KarlsonMapEditor.Scripting_API;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
@@ -103,6 +104,9 @@ namespace KarlsonMapEditor
                 sources
                 );
 
+            // remove all objects marked as void from the sources
+            sources = sources.Where(s => s.area != LevelData.NavAreaVoid).ToList();
+
             // find the bounds
             Bounds navBounds = new Bounds();
             GetBounds(sourceRoot, ref navBounds);
@@ -203,7 +207,8 @@ namespace KarlsonMapEditor
                 LuaScript = new GameObject("LuaScript").AddComponent<LuaScriptRunner>();
                 LuaScript.Code = levelData.LuaScript;
             }
-            LuaScript.LuaStart(root, sunGO, PlayerMovement.Instance.gameObject, baker.UpdateEnvironment);
+            LuaScript.players.Add(PlayerMovement.Instance);
+            LuaScript.LuaStart(root, sunGO, baker.UpdateEnvironment);
         }
     }
 
@@ -219,6 +224,7 @@ namespace KarlsonMapEditor
 
     // event hooks
 
+    /*
     [HarmonyPatch(typeof(Glass), "OnTriggerEnter")]
     class Hook_Glass_OnTriggerEnter
     {
@@ -247,6 +253,7 @@ namespace KarlsonMapEditor
             return false;
         }
     }
+    */
 
     [HarmonyPatch(typeof(Game), "Win")]
     public class Hook_Game_Win
@@ -254,11 +261,13 @@ namespace KarlsonMapEditor
         public static bool Prefix(Game __instance)
         {
             if (LevelPlayer.currentLevel == "") return true;
+            /*
             if (LevelPlayer.currentScript != null)
             {
                 var ret = LevelPlayer.currentScript.InvokeFunction("onwin");
                 if (ret.HoldsTrue()) return false;
             }
+            */
             __instance.playing = false;
             Timer.Instance.Stop();
             Time.timeScale = 0.05f;

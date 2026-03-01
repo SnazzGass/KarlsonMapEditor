@@ -7,6 +7,8 @@ using TMPro;
 using UnityEngine;
 using static KarlsonMapEditor.CustomDescriptors;
 using KarlsonMapEditor.Scripting_API;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace KarlsonMapEditor
 {
@@ -14,26 +16,27 @@ namespace KarlsonMapEditor
     {
         public static readonly string ScriptPath = Path.Combine(Main.directory, "_temp.lua");
 
-        public const string DefaultCode = @"
--- Any code written below will be executed every time the level is (re)started.
+        public const string DefaultCode =
+@"-- Any code written below will be executed every time the level is (re)started.
 -- Lua documentation: https://www.lua.org/pil/contents.html
 -- Moonsharp Lua Differences: https://www.moonsharp.org/moonluadifferences.html
--- Scripting API: https://github.com/SnazzGass/KarlsonMapEditor/wiki/Scripting-API
+-- Scripting API: https://github.com/SnazzGass/KarlsonMapEditor/wiki/Overview
 
 print('Hello, world!');
 ";
 
         public string Code;
 
-        private static bool running = false;
+        private bool running = false;
+        public List<PlayerMovement> players;
 
-        private readonly Script script = new Script(CoreModules.Preset_SoftSandbox);
+        public readonly Script script = new Script(CoreModules.Preset_SoftSandbox);
 
         private void Awake()
         {
             script.Options.DebugPrint = LuaDebug;
-
             RegisterTypes();
+            script.Globals["Players"] = players;
         }
         // logging
         private void LuaDebug(string msg)
@@ -41,7 +44,7 @@ print('Hello, world!');
             Loadson.Console.Log("[Lua] " + msg);
         }
 
-        private StandardUserDataDescriptor RegisterStaticWithConstructor<T>()
+        private StandardUserDataDescriptor RegisterWithConstructor<T>(bool newConstructor=true)
         {
             StandardUserDataDescriptor descriptor = (StandardUserDataDescriptor)UserData.RegisterType<T>();
             
@@ -49,84 +52,69 @@ print('Hello, world!');
             descriptor.RemoveMember("__new");
 
             // add the desired constructors
-            foreach (ConstructorInfo constructor in typeof(T).GetConstructors())
-                descriptor.AddMember("new", new MethodMemberDescriptor(constructor));
+            if (newConstructor)
+                foreach (ConstructorInfo constructor in typeof(T).GetConstructors())
+                    descriptor.AddMember("new", new MethodMemberDescriptor(constructor));
 
             return descriptor;
         }
 
-        private IUserDataDescriptor RegisterDestructableProxyType<TProxy, TTarget>(Func<TTarget, TProxy> wrapDelegate) where TProxy : class where TTarget : class
+        private IUserDataDescriptor RegisterDestructableProxyType<TProxy, TTarget>(Func<TTarget, TProxy> wrapDelegate, bool constructor) where TProxy : class where TTarget : class
         {
-            IUserDataDescriptor proxyDescriptor = UserData.RegisterType<TProxy>();
-            DestructableProxyUserDataDescriptor targetDescriptor = new DestructableProxyUserDataDescriptor(new DelegateProxyFactory<TProxy, TTarget>(wrapDelegate), proxyDescriptor, null);
+            StandardUserDataDescriptor proxyDescriptor = RegisterWithConstructor<TProxy>(constructor);
+            DestructableProxyUserDataDescriptor targetDescriptor = new DestructableProxyUserDataDescriptor(new DelegateProxyFactory<TProxy, TTarget>(wrapDelegate), proxyDescriptor);
             return UserData.RegisterType<TTarget>(targetDescriptor);
-        }
-
-        private void FilterComponentMembers(StandardUserDataDescriptor descriptor)
-        {
-            descriptor.RemoveMember("__new");
-            descriptor.RemoveMember("hideFlags");
-            descriptor.RemoveMember("BroadcastMessage");
-            descriptor.RemoveMember("GetComponentInChildren");
-            descriptor.RemoveMember("GetComponentInParent");
-            descriptor.RemoveMember("GetComponents");
-            descriptor.RemoveMember("GetComponentsInChildren");
-            descriptor.RemoveMember("GetComponentsInParent");
-            descriptor.RemoveMember("SendMessage");
-            descriptor.RemoveMember("SendMessageUpwards");
-            descriptor.RemoveMember("TryGetComponent");
-            descriptor.RemoveMember("GetInstanceID");
-            descriptor.RemoveMember("DestroyImmediate");
-            descriptor.RemoveMember("DontDestroyOnLoad");
         }
 
         // interface
         private void RegisterTypes()
         {
-            // unity common structs
-            RegisterStaticWithConstructor<Vector2>();
-            script.Globals["Vector2"] = UserData.CreateStatic<Vector2>();
-            RegisterStaticWithConstructor<Vector3>();
-            script.Globals["Vector3"] = UserData.CreateStatic<Vector3>();
-            RegisterStaticWithConstructor<Quaternion>();
-            script.Globals["Quaternion"] = UserData.CreateStatic<Quaternion>();
-            RegisterStaticWithConstructor<Color>();
-            script.Globals["Color"] = UserData.CreateStatic<Color>();
-            RegisterStaticWithConstructor<Matrix4x4>();
-            script.Globals["Matrix"] = UserData.CreateStatic<Matrix4x4>();
-
-            // level object data
-            RegisterStaticWithConstructor<LevelData.LevelObject>();
+            // KME objects
+            RegisterWithConstructor<LevelData.LevelObject>();
             script.Globals["LevelObjectData"] = UserData.CreateStatic<LevelData.LevelObject>();
+            RegisterWithConstructor<Trigger>(false);
+            RegisterDestructableProxyType<PlayerProxy, PlayerMovement>(o => new PlayerProxy(o), false);
 
-            // unity common objects
-            RegisterDestructableProxyType<ObjectProxy, UnityEngine.Object>(o => new ObjectProxy(o));
+            // unity structs
+            RegisterWithConstructor<Vector2>();
+            script.Globals["Vector2"] = UserData.CreateStatic<Vector2>();
+            RegisterWithConstructor<Vector3>();
+            script.Globals["Vector3"] = UserData.CreateStatic<Vector3>();
+            RegisterWithConstructor<Quaternion>();
+            script.Globals["Quaternion"] = UserData.CreateStatic<Quaternion>();
+            RegisterWithConstructor<Color>();
+            script.Globals["Color"] = UserData.CreateStatic<Color>();
+
+            // unity objects
+            RegisterDestructableProxyType<ObjectProxy, UnityEngine.Object>(o => new ObjectProxy(o), true);
             script.Globals["Object"] = UserData.CreateStatic<UnityEngine.Object>();
-            RegisterDestructableProxyType<GameObjectProxy, GameObject>(o => new GameObjectProxy(o));
+            RegisterDestructableProxyType<GameObjectProxy, GameObject>(o => new GameObjectProxy(o), true);
             script.Globals["GameObject"] = UserData.CreateStatic<GameObject>();
-            RegisterDestructableProxyType<ComponentProxy, Component>(o => new ComponentProxy(o));
+            RegisterDestructableProxyType<ComponentProxy, Component>(o => new ComponentProxy(o), false);
+            RegisterDestructableProxyType<TransformProxy, Transform>(o => new TransformProxy(o), false);
 
-            UserData.RegisterType<Texture>(InteropAccessMode.HideMembers);
-            RegisterDestructableProxyType<MaterialProxy, Material>(o => new MaterialProxy(o));
-            RegisterDestructableProxyType<TextMeshProProxy, TextMeshPro>(o => new TextMeshProProxy(o));
-            RegisterDestructableProxyType<LightProxy, Light>(o => new LightProxy(o));
-
-            // easier to create these by removing members rather than by setting up a proxy
-            StandardUserDataDescriptor transformDescriptor = (StandardUserDataDescriptor)UserData.RegisterType<Transform>();
-            FilterComponentMembers(transformDescriptor);
-            transformDescriptor.RemoveMember("hierarchyCapacity");
-            transformDescriptor.RemoveMember("hierarchyCount");
-            //transformDescriptor.RemoveMember("root");
-
-            StandardUserDataDescriptor rigidbodyDescriptor = (StandardUserDataDescriptor)UserData.RegisterType<Rigidbody>();
-            FilterComponentMembers(rigidbodyDescriptor);
-
+            // UserData.RegisterType<Texture>(InteropAccessMode.HideMembers);
+            RegisterDestructableProxyType<MaterialProxy, Material>(o => new MaterialProxy(o), true);
+            script.Globals["Material"] = UserData.CreateStatic<Material>();
+            RegisterDestructableProxyType<TextMeshProProxy, TextMeshPro>(o => new TextMeshProProxy(o), false);
+            RegisterDestructableProxyType<LightProxy, Light>(o => new LightProxy(o), false);
+            RegisterDestructableProxyType<RigidbodyProxy, Rigidbody>(o => new RigidbodyProxy(o), false);
+            RegisterDestructableProxyType<ColliderProxy, Collider>(o => new ColliderProxy(o), false);
+            RegisterDestructableProxyType<PhysicMaterialProxy, PhysicMaterial>(o => new PhysicMaterialProxy(o), true);
 
             // methods
+            script.Globals["Find"] = (Func<string, GameObject>)GameObject.Find;
+            script.Globals["FindAll"] = (Func<string, GameObject[]>)FindAll;
+            script.Globals["Destroy"] = (Action<Object>)Object.Destroy;
+            script.Globals["Instantiate"] = (Func<Object, Object>)Object.Instantiate;
+            script.Globals["IsPlayer"] = (Func<GameObject, bool>) delegate(GameObject go) { return go.GetComponent<PlayerMovement>() != null; };
             script.Globals["Raycast"] = (Func<Vector3, Vector3, float, int, Table>)Raycast;
+            script.Globals["CreateExplosion"] = (Action<Vector3>) delegate (Vector3 pos) { Instantiate(PrefabManager.Instance.explosion, pos, Quaternion.identity); };
             // TODO: set gun on enemy
 
             // enums
+
+            // LevelObjectData
             UserData.RegisterType<ObjectType>();
             script.Globals["LevelObjectDataType"] = typeof(ObjectType);
             UserData.RegisterType<PrefabType>();
@@ -134,22 +122,33 @@ print('Hello, world!');
             UserData.RegisterType<GeometryShape>();
             script.Globals["Geometry"] = typeof(GeometryShape);
 
-            UserData.RegisterType<EventArgs>();
+            // PhysicsMaterial
+            UserData.RegisterType<PhysicMaterialCombine>();
+            script.Globals["PhysicMaterialCombine"] = typeof(PhysicMaterialCombine);
+
+            // Rigidbody
+            UserData.RegisterType<RigidbodyConstraints>();
+            script.Globals["RigidbodyConstraints"] = typeof(RigidbodyConstraints);
+            UserData.RegisterType<CollisionDetectionMode>();
+            script.Globals["CollisionDetectionMode"] = typeof(CollisionDetectionMode);
+            UserData.RegisterType<RigidbodyInterpolation>();
+            script.Globals["RigidbodyInterpolation"] = typeof(RigidbodyInterpolation);
+
+            // Layers
+            UserData.RegisterType<KarlsonLayerBit>();
+            script.Globals["Layer"] = typeof(KarlsonLayerBit);
         }
 
-
         // callbacks
-        private static DynValue UpdateFunc;
-        private static DynValue FixedUpdateFunc;
-        private static DynValue TriggerFunc;
+        private DynValue UpdateFunc;
+        private DynValue FixedUpdateFunc;
 
         // init the lua script, this should be done after the level has been loaded
-        public void LuaStart(GameObject Root, GameObject Sun, GameObject Player, Action BakeReflections)
+        public void LuaStart(GameObject Root, GameObject Sun, Action BakeReflections)
         {
-            // set up globals
+            // set up level specific globals
             script.Globals["Root"] = Root;
             script.Globals["Sun"] = Sun;
-            script.Globals["Player"] = Player;
             script.Globals["BakeReflections"] = BakeReflections;
 
             // run the lua code
@@ -177,7 +176,8 @@ print('Hello, world!');
                 script.Call(FixedUpdateFunc, Time.fixedDeltaTime);
         }
 
-        private const int defaultLayerMask = 1 << 0 | 1 << 8 | 1 << 9; // layer 0 is default, layer 8 is player, layer 9 is ground
+        // Default, Player, Ground, Object, Enemy, Gun, Glass
+        private const int defaultLayerMask = 0b100011011100000001;
         private Table Raycast(Vector3 origin, Vector3 direction, float maxDistance=Mathf.Infinity, int layerMask=defaultLayerMask)
         {
             if (Physics.Raycast(origin, direction, out RaycastHit info, maxDistance, layerMask))
@@ -185,11 +185,39 @@ print('Hello, world!');
                 Table result = new Table(script);
                 result["point"] = info.point;
                 result["distance"] = info.distance;
-                result["object"] = info.collider.gameObject;
+                result["collider"] = info.collider;
+                result["rigidbody"] = info.rigidbody;
+                result["gameObject"] = info.transform.gameObject;
                 result["normal"] = info.normal;
+                result["textureCoord"] = info.textureCoord;
                 return result;
             }
             return null;
+        }
+
+        // returns an array of all game objects with the given name
+        private GameObject[] FindAll(string name)
+        {
+            return GameObject.FindObjectsOfType<GameObject>().Where(obj => obj.name == name).ToArray();
+        }
+
+        private enum KarlsonLayerBit
+        {
+            Default = 1 << 0,
+            TransparentFX = 1 << 1,
+            IgnoreRaycast = 1 << 2,
+            Water = 1 << 4,
+            UI = 1 << 5,
+            Player = 1 << 8,
+            Ground = 1 << 9,
+            Object = 1 << 10,
+            PP = 1 << 11,
+            Enemy = 1 << 12,
+            Gun = 1 << 13,
+            Bullet = 1 << 14,
+            Equipable = 1 << 15,
+            CollideWithGroundOnly = 1 << 16,
+            Glass = 1 << 17,
         }
     }
 }
